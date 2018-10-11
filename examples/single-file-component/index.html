@@ -39,7 +39,7 @@ var html = `string_vue:
 
 //var html = 'string_vue: 1231232131111111111111111111111111111111111111';
 
-  loadVue(html).then(App => {
+  loadVueOnDocument(html, document).then(App => {
   //  loadVue('./single-file-app.vue').then(App => {
 
     new Vue({

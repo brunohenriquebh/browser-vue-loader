@@ -101,3 +101,7 @@ export const loadVue = (entryUrl) => {
   return  loader.import(entryUrl)
   .then(m => m.default ? m.default : m)
 }
+export const loadVueOnDocument = (entryUrl, document) => {
+  loadVue.onDocument = document;
+  return loadVue(entryUrl);
+}

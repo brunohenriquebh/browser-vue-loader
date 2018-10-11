@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:imdreamrunner/browser-vue-loader.git"
+    "url": "git@github.com:brunohenriquebh/browser-vue-loader.git"
   },
   "standard": {
     "parser": "babel-eslint",
