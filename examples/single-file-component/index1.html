@@ -10,7 +10,7 @@
 <script>
 
 
-var html = `string_vue:
+var html = `vue-sfc!string_vue:
 <template>
   <div class="app">
     <h1>{{ msg }}</h1>
@@ -18,7 +18,6 @@ var html = `string_vue:
 <\/template>
 
 <script>
-  alert("teste");
   export default {
     data () {
       return {
@@ -28,7 +27,7 @@ var html = `string_vue:
   }
 <\/script>
 
-<style scoped>
+<style>
   .app h1 {
     color: red
   }
@@ -38,10 +37,10 @@ var html = `string_vue:
 
 
 //var html = 'string_vue: 1231232131111111111111111111111111111111111111';
-
-  loadVue(html).then(App => {
-  //  loadVue('./single-file-app.vue').then(App => {
-
+console.log(html);
+  //loadVue(html).then(App => {
+    loadVue('./single-file-app.vue').then(App => {
+    console.log("From string aee");
     new Vue({
       render: h => h(App)
     }).$mount('#app')

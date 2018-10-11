@@ -5,7 +5,7 @@
  *
  */
 import RegisterLoader from 'es-module-loader/core/register-loader'
-import { fetchContent } from './fetch-source'
+import { fetchContent, addToCache } from './fetch-source'
 import {
   splitKey,
   constructKey,
@@ -20,7 +20,7 @@ import Router from './router'
  */
 class BrowserVueLoader extends RegisterLoader {
   constructor (baseKey) {
-    super(baseKey)
+    super(2)
     this.router = new Router(this)
   }
 
@@ -42,7 +42,8 @@ class BrowserVueLoader extends RegisterLoader {
     if (relativeResolved) {
       url = relativeResolved
     }
-    if (url.indexOf('://') < 0 && url.indexOf('.') < 0) {
+
+    if (url.indexOf('://') < 0 && url.indexOf('.') < 0 && !url.startsWith("string_vue:")) {
       // NPM package
       const npmPackage = await lookupNpmPackage(url)
       if (npmPackage) {
@@ -50,7 +51,9 @@ class BrowserVueLoader extends RegisterLoader {
         processor = processor || 'commonjs'
       }
     }
-    url = await resolveActualUrl(url)
+    if( !url.startsWith("string_vue:"))
+      url = await resolveActualUrl(url)
+
     if (checkDefaultBinary(url)) {
       options.binary = true
     }
@@ -67,6 +70,7 @@ class BrowserVueLoader extends RegisterLoader {
    */
   async [RegisterLoader.instantiate] (key) {
     const {processor, url, options} = splitKey(key)
+
     const source = await fetchContent(url, Boolean(options.binary))
     if (processor) {
       await this.router.routeTo(processor, key, source)
@@ -85,5 +89,15 @@ export const loader = new BrowserVueLoader()
  * @param {String} entryUrl - the URL to load the resource from.
  * @return {Promise<any>} the loaded component / module.
  */
-export const loadVue = (entryUrl) => loader.import(entryUrl)
+export const loadVue = (entryUrl) => {
+
+  if(entryUrl.startsWith("string_vue:")){ //Hack Used to render from static variables
+    const content = entryUrl;
+    
+    entryUrl = 'http://'+ Math.random().toString(36)+".vue";
+    addToCache(entryUrl, content.substr(11));
+  }
+
+  return  loader.import(entryUrl)
   .then(m => m.default ? m.default : m)
+}
